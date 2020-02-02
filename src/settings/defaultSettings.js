@@ -27,7 +27,8 @@ export default [
         default: defaultLangs.targetLang,
         options: langListOptions,
         useRawOptionName: true
-      },
+      }
+      /*
       {
         id: "secondTargetLang",
         title: "secondTargetLangLabel",
@@ -44,6 +45,7 @@ export default [
         type: "checkbox",
         default: true
       }
+      */
     ]
   },
   {
@@ -87,6 +89,7 @@ export default [
           }
         ]
       },
+      /*
       {
         id: "ifChangeSecondLangOnPage",
         title: "ifChangeSecondLangLabel",
@@ -94,6 +97,7 @@ export default [
         type: "checkbox",
         default: false
       },
+      */
       {
         id: "isDisabledInTextFields",
         title: "isDisabledInTextFieldsLabel",
@@ -123,7 +127,8 @@ export default [
         min: 0,
         placeholder: 500,
         default: 500
-      },
+      }
+      /*
       {
         id: "ifChangeSecondLang",
         title: "ifChangeSecondLangLabel",
@@ -131,6 +136,7 @@ export default [
         type: "checkbox",
         default: true
       }
+      */
     ]
   },
   {
