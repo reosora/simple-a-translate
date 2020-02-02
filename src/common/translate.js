@@ -1,5 +1,7 @@
 import log from "loglevel";
+import AWS from "aws-sdk";
 let translationHistory = [];
+let translater = new AWS.Translate();
 
 const logDir = "common/translate";
 
