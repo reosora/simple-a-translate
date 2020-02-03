@@ -32,6 +32,18 @@
   "copiedLabel": {
     "message": "コピーしました。"
   },
+  "accessKeyIdLabel": {
+    "message": "アクセスキー ID"
+  },
+  "accessKeyIdCaptionLabel": {
+    "message": "利用するアクセスキー ID を入力してください"
+  },
+  "secretAccessKeyLabel": {
+    "message": "シークレットアクセスキー"
+  },
+  "secretAccessKeyCaptionLabel": {
+    "message": "利用するシークレットアクセスキーを入力してください"
+  },
   "targetLangLabel": {
     "message": "翻訳先の言語"
   },

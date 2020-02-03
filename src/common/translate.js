@@ -4,7 +4,7 @@ var AWS = require("aws-sdk");
 AWS.config.update({
   credentials: new AWS.Credentials(
     getSettings("accessKeyId"),
-    getSettings("secretKey")
+    getSettings("secretAccessKey")
   ),
   region: 'ap-northeast-1'
 });
@@ -12,6 +12,19 @@ let translationHistory = [];
 var translater = new AWS.Translate();
 
 const logDir = "common/translate";
+
+const updateCredentialSettings = () => {
+  if(!AWS.config.credentials.accessKeyId || !AWS.config.credentials.secretAccessKey){
+    log.log(logDir, "tranlate()", "updateSetting");
+    AWS.config.update({
+      credentials: new AWS.Credentials(
+        getSettings("accessKeyId"),
+        getSettings("secretAccessKey")
+      )
+    });
+    translater = new AWS.Translate();
+  }
+}
 
 const getHistory = (sourceWord, sourceLang, targetLang) => {
   const history = translationHistory.find(
@@ -121,6 +134,7 @@ const formatAwsResult = result => {
 };
 
 export default async (sourceWord, sourceLang = "auto", targetLang) => {
+  updateCredentialSettings();
   log.log(logDir, "tranlate()", sourceWord, targetLang);
   sourceWord = sourceWord.trim();
   if (sourceWord === "")

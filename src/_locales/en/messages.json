@@ -33,6 +33,18 @@
   "copiedLabel": {
     "message": "Copied."
   },
+  "accessKeyIdLabel": {
+    "message": "AccessKeyID"
+  },
+  "accessKeyIdCaptionLabel": {
+    "message": "Enter your AccessKeyID"
+  },
+  "secretAccessKeyLabel": {
+    "message": "SecretAccessKey"
+  },
+  "secretAccessKeyCaptionLabel": {
+    "message": "Enter your SecretAccessKey"
+  },
   "targetLangLabel": {
     "message": "Target language"
   },

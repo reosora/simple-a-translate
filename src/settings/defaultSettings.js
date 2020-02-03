@@ -17,6 +17,27 @@ const defaultLangs = getDefaultLangs();
 
 export default [
   {
+    category: "awsSetting",
+    elements: [
+      {
+        id: "accessKeyId",
+        title: "accessKeyIdLabel",
+        captions: ["accessKeyIdCaptionLabel"],
+        type: "text",
+        default: "",
+        placeholder: "enter your AccessKeyId"
+      },
+      {
+        id: "secretAccessKey",
+        title: "secretAccessKeyLabel",
+        captions: ["secretAccessKeyCaptionLabel"],
+        type: "text",
+        default: "",
+        placeholder: "enter your secretAccessKey"
+      }
+    ]
+  },
+  {
     category: "generalLabel",
     elements: [
       {
