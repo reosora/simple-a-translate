@@ -10,12 +10,14 @@ export default class Footer extends Component {
     this.langList = generateLangOptions();
   }
 
+  /*
   handleLinkClick = async () => {
     const { tabUrl, targetLang } = this.props;
     const encodedUrl = encodeURIComponent(tabUrl);
-    const translateUrl = `https://translate.google.com/translate?hl=${targetLang}&sl=auto&u=${encodedUrl}`;
+    const translateUrl = ``; // translater link
     openUrl(translateUrl);
   };
+  */
 
   handleChange = e => {
     const lang = e.target.value;
@@ -27,9 +29,6 @@ export default class Footer extends Component {
 
     return (
       <div id="footer">
-        <div className="translateLink">
-          {tabUrl && <a onClick={this.handleLinkClick}>{browser.i18n.getMessage("showLink")}</a>}
-        </div>
         <div className="selectWrap">
           <select
             id="langList"
