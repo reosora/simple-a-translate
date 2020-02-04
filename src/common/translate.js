@@ -6,7 +6,7 @@ AWS.config.update({
     getSettings("accessKeyId"),
     getSettings("secretAccessKey")
   ),
-  region: 'ap-northeast-1'
+  region: getSettings("region")
 });
 let translationHistory = [];
 var translater = new AWS.Translate();
@@ -21,6 +21,16 @@ const updateCredentialSettings = () => {
         getSettings("accessKeyId"),
         getSettings("secretAccessKey")
       )
+    });
+    translater = new AWS.Translate();
+  }
+}
+
+const updateRegion = () => {
+  if(!AWS.config.region){
+    log.log(logDir, "updateRegion");
+    AWS.config.update({
+      region: getSettings("region")
     });
     translater = new AWS.Translate();
   }
@@ -135,6 +145,7 @@ const formatAwsResult = result => {
 
 export default async (sourceWord, sourceLang = "auto", targetLang) => {
   updateCredentialSettings();
+  updateRegion();
   log.log(logDir, "tranlate()", sourceWord, targetLang);
   sourceWord = sourceWord.trim();
   if (sourceWord === "")
