@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import generateLangOptions from "src/common/generateLangOptions";
+import generateRegionOptions from "src/common/generateRegionOptions";
 
 const getDefaultLangs = () => {
   const uiLang = browser.i18n.getUILanguage();
@@ -13,7 +14,9 @@ const getDefaultLangs = () => {
 };
 
 const langListOptions = generateLangOptions();
+const regionListOptions = generateRegionOptions();
 const defaultLangs = getDefaultLangs();
+const defaultRegion = "ap-northeast-1";
 
 export default [
   {
@@ -34,6 +37,15 @@ export default [
         type: "text",
         default: "",
         placeholder: "enter your secretAccessKey"
+      },
+      {
+        id: "region",
+        title: "regionLabel",
+        captions: ["regionCaptionLabel"],
+        type: "select",
+        default: defaultRegion,
+        options: regionListOptions,
+        useRawOptionName: true
       }
     ]
   },
