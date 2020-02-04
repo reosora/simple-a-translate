@@ -16,7 +16,7 @@ const getDefaultLangs = () => {
 const langListOptions = generateLangOptions();
 const regionListOptions = generateRegionOptions();
 const defaultLangs = getDefaultLangs();
-const defaultRegion = "ap-northeast-1";
+const defaultRegion = "us-east-1";
 
 export default [
   {
@@ -117,7 +117,7 @@ export default [
             title: "ifCheckLangLabel",
             captions: ["ifCheckLangCaptionLabel"],
             type: "checkbox",
-            default: true,
+            default: false,
             hr: true
           }
         ]
