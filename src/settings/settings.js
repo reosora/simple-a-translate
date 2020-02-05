@@ -1,6 +1,7 @@
 import browser from "webextension-polyfill";
 import log from "loglevel";
 import defaultSettings from "./defaultSettings";
+import awsSingleton from "../common/awsSingleton";
 
 const logDir = "settings/settings";
 let currentSettings = {};
@@ -39,6 +40,8 @@ export const setSettings = async (id, value) => {
   log.info(logDir, "setSettings()", id, value);
   currentSettings[id] = value;
   await browser.storage.local.set({ Settings: currentSettings });
+  if(id == "accessKeyId" || id == "secretAccessKey") awsSingleton.updateCredentialSettings();
+  else if(id == "region") awsSingleton.updateRegion();
 };
 
 export const getSettings = id => {

@@ -1,40 +1,8 @@
 import log from "loglevel";
-import { getSettings } from "src/settings/settings";
-var AWS = require("aws-sdk");
-AWS.config.update({
-  credentials: new AWS.Credentials(
-    getSettings("accessKeyId"),
-    getSettings("secretAccessKey")
-  ),
-  region: getSettings("region")
-});
+import awsSingleton from "./awsSingleton";
 let translationHistory = [];
-var translater = new AWS.Translate();
 
 const logDir = "common/translate";
-
-const updateCredentialSettings = () => {
-  if(!AWS.config.credentials.accessKeyId || !AWS.config.credentials.secretAccessKey){
-    log.log(logDir, "tranlate()", "updateSetting");
-    AWS.config.update({
-      credentials: new AWS.Credentials(
-        getSettings("accessKeyId"),
-        getSettings("secretAccessKey")
-      )
-    });
-    translater = new AWS.Translate();
-  }
-}
-
-const updateRegion = () => {
-  if(!AWS.config.region){
-    log.log(logDir, "updateRegion");
-    AWS.config.update({
-      region: getSettings("region")
-    });
-    translater = new AWS.Translate();
-  }
-}
 
 const getHistory = (sourceWord, sourceLang, targetLang) => {
   const history = translationHistory.find(
@@ -57,6 +25,8 @@ const setHistory = (sourceWord, sourceLang, targetLang, formattedResult) => {
 };
 
 const sendRequest = (word, sourceLang, targetLang) => {
+  log.log(logDir, awsSingleton.AWS.config);
+  let translater = new awsSingleton.AWS.Translate();
   let params = {
     SourceLanguageCode: sourceLang, /* required */
     TargetLanguageCode: targetLang, /* required */
@@ -144,8 +114,6 @@ const formatAwsResult = result => {
 };
 
 export default async (sourceWord, sourceLang = "auto", targetLang) => {
-  updateCredentialSettings();
-  updateRegion();
   log.log(logDir, "tranlate()", sourceWord, targetLang);
   sourceWord = sourceWord.trim();
   if (sourceWord === "")
