@@ -1,7 +1,6 @@
 import log from "loglevel";
-import AWS from "aws-sdk";
+import { getSettings} from "src/settings/settings";
 let translationHistory = [];
-let translater = new AWS.Translate();
 
 const logDir = "common/translate";
 
@@ -27,13 +26,21 @@ const setHistory = (sourceWord, sourceLang, targetLang, formattedResult) => {
 
 const sendRequest = (word, sourceLang, targetLang) => {
   log.log(logDir, "sendRequest()");
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&dt=bd&dj=1&q=${encodeURIComponent(
-    word
-  )}`;
+  const params = {
+    ApiParameter: {
+      SourceLanguageCode: sourceLang,
+      TargetLanguageCode: targetLang,
+      Text: word
+    },
+    Region: getSettings("region")
+  }
+  const data = JSON.stringify(params);
+  const url = getSettings("endpoint");
   const xhr = new XMLHttpRequest();
   xhr.responseType = "json";
+  xhr.setRequestHeader("Content-Type", "application/json");
   xhr.open("GET", url);
-  xhr.send();
+  xhr.send(data);
 
   return new Promise((resolve, reject) => {
     xhr.onload = () => {
@@ -78,6 +85,42 @@ const formatResult = result => {
   return resultData;
 };
 
+const formatAwsResult = result => {
+  log.log(logDir, "formatAwsResult:Start");
+  const resultData = {
+    resultText: "",
+    candidateText: "",
+    sourceLanguage: "",
+    percentage: 0,
+    statusText: ""
+  };
+
+  // Now I don't understand how to get AWS.Response by using translateText. so I have not check HTTP Status Code yet.
+  /*
+  if (result.status === 0) resultData.statusText = "Network Error";
+  else if (result.status === 200) resultData.statusText = "OK";
+  else if (result.status === 429) resultData.statusText = "Service Unavailable";
+  else if (result.status === 503) resultData.statusText = "Service Unavailable";
+  else resultData.statusText = result.statusText || result.status;
+  */
+
+  if (!result) {
+    log.error(logDir, "formatAwsResult()", "NullTranslateResult");
+    return "Unexpected NullResult Error";
+  }
+  if (!result.TranslatedText) {
+    log.error(logDir, "formatAwsResult()", "UnexpectedError");
+    return result;
+  }
+  resultData.statusText = "OK";
+
+  resultData.sourceLanguage = result.SourceLanguageCode;
+  resultData.resultText = result.TranslatedText;
+
+  log.log(logDir, "formatAwsResult()", resultData);
+  return resultData;
+};
+
 export default async (sourceWord, sourceLang = "auto", targetLang) => {
   log.log(logDir, "tranlate()", sourceWord, targetLang);
   sourceWord = sourceWord.trim();
@@ -94,7 +137,7 @@ export default async (sourceWord, sourceLang = "auto", targetLang) => {
   if (history) return history.result;
 
   const result = await sendRequest(sourceWord, sourceLang, targetLang);
-  const formattedResult = formatResult(result);
+  const formattedResult = formatAwsResult(result);
   setHistory(sourceWord, sourceLang, targetLang, formattedResult);
   return formattedResult;
 };

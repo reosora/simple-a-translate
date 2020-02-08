@@ -23,6 +23,14 @@ export default [
     category: "awsSetting",
     elements: [
       {
+        id: "endpoint",
+        title: "endpointLabel",
+        captions: ["endpointCaptionLabel"],
+        type: "text",
+        default: "",
+        placeholder: "enter your endpoint URL"
+      },
+      {
         id: "region",
         title: "regionLabel",
         captions: ["regionCaptionLabel"],
