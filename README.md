@@ -13,6 +13,10 @@ Thank you to the awesome **[backers](https://github.com/sienori/simple-translate
 
 [<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Became a Patreon">](https://www.patreon.com/sienori)
 
+## How To Use
+1. Create your backend infrastracture using [translate-infra-cdk](https://github.com/reosora/translate-infra-cdk)
+2. Enter your endpoint url on setting page
+
 ## Developing
 
 1. Clone the repository `git clone https://github.com/reosora/simple-a-translate`
