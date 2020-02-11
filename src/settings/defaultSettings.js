@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import generateLangOptions from "src/common/generateLangOptions";
+import generateRegionOptions from "src/common/generateRegionOptions";
 
 const getDefaultLangs = () => {
   const uiLang = browser.i18n.getUILanguage();
@@ -13,9 +14,33 @@ const getDefaultLangs = () => {
 };
 
 const langListOptions = generateLangOptions();
+const regionListOptions = generateRegionOptions();
 const defaultLangs = getDefaultLangs();
+const defaultRegion = "us-east-1";
 
 export default [
+  {
+    category: "awsSetting",
+    elements: [
+      {
+        id: "endpoint",
+        title: "endpointLabel",
+        captions: ["endpointCaptionLabel"],
+        type: "text",
+        default: "",
+        placeholder: "enter your endpoint URL"
+      },
+      {
+        id: "region",
+        title: "regionLabel",
+        captions: ["regionCaptionLabel"],
+        type: "select",
+        default: defaultRegion,
+        options: regionListOptions,
+        useRawOptionName: true
+      }
+    ]
+  },
   {
     category: "generalLabel",
     elements: [
@@ -27,7 +52,8 @@ export default [
         default: defaultLangs.targetLang,
         options: langListOptions,
         useRawOptionName: true
-      },
+      }
+      /*
       {
         id: "secondTargetLang",
         title: "secondTargetLangLabel",
@@ -44,6 +70,7 @@ export default [
         type: "checkbox",
         default: true
       }
+      */
     ]
   },
   {
@@ -82,11 +109,12 @@ export default [
             title: "ifCheckLangLabel",
             captions: ["ifCheckLangCaptionLabel"],
             type: "checkbox",
-            default: true,
+            default: false,
             hr: true
           }
         ]
       },
+      /*
       {
         id: "ifChangeSecondLangOnPage",
         title: "ifChangeSecondLangLabel",
@@ -94,6 +122,7 @@ export default [
         type: "checkbox",
         default: false
       },
+      */
       {
         id: "isDisabledInTextFields",
         title: "isDisabledInTextFieldsLabel",
@@ -123,7 +152,8 @@ export default [
         min: 0,
         placeholder: 500,
         default: 500
-      },
+      }
+      /*
       {
         id: "ifChangeSecondLang",
         title: "ifChangeSecondLangLabel",
@@ -131,6 +161,7 @@ export default [
         type: "checkbox",
         default: true
       }
+      */
     ]
   },
   {

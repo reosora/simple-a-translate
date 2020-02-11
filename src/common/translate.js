@@ -1,4 +1,5 @@
 import log from "loglevel";
+import { getSettings} from "src/settings/settings";
 let translationHistory = [];
 
 const logDir = "common/translate";
@@ -25,13 +26,20 @@ const setHistory = (sourceWord, sourceLang, targetLang, formattedResult) => {
 
 const sendRequest = (word, sourceLang, targetLang) => {
   log.log(logDir, "sendRequest()");
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&dt=bd&dj=1&q=${encodeURIComponent(
-    word
-  )}`;
+  const params = {
+    ApiParameter: {
+      SourceLanguageCode: sourceLang,
+      TargetLanguageCode: targetLang,
+      Text: word
+    },
+    Region: getSettings("region")
+  }
+  const data = JSON.stringify(params);
+  const url = getSettings("endpoint");
   const xhr = new XMLHttpRequest();
   xhr.responseType = "json";
-  xhr.open("GET", url);
-  xhr.send();
+  xhr.open("POST", url);
+  xhr.send(data);
 
   return new Promise((resolve, reject) => {
     xhr.onload = () => {
@@ -76,6 +84,34 @@ const formatResult = result => {
   return resultData;
 };
 
+const formatAwsResult = result => {
+  log.log(logDir, "formatAwsResult:Start");
+  const resultData = {
+    resultText: "",
+    candidateText: "",
+    sourceLanguage: "",
+    percentage: 0,
+    statusText: ""
+  };
+
+  if (result.status === 0) resultData.statusText = "Network Error";
+  else if (result.status === 200) resultData.statusText = "OK";
+  else if (result.status === 400) resultData.statusText = "Internal Service Error";
+  else if (result.status === 401) resultData.statusText = "Wrong Method: You should use 'POST'.";
+  else resultData.statusText = result.statusText || result.status;
+
+  if (resultData.statusText !== "OK") {
+    log.error(logDir, "formatAwsResult()", resultData);
+    return resultData;
+  }
+
+  resultData.sourceLanguage = result.response.SourceLanguageCode;
+  resultData.resultText = result.response.TranslatedText;
+
+  log.log(logDir, "formatAwsResult()", resultData);
+  return resultData;
+};
+
 export default async (sourceWord, sourceLang = "auto", targetLang) => {
   log.log(logDir, "tranlate()", sourceWord, targetLang);
   sourceWord = sourceWord.trim();
@@ -92,7 +128,7 @@ export default async (sourceWord, sourceLang = "auto", targetLang) => {
   if (history) return history.result;
 
   const result = await sendRequest(sourceWord, sourceLang, targetLang);
-  const formattedResult = formatResult(result);
+  const formattedResult = formatAwsResult(result);
   setHistory(sourceWord, sourceLang, targetLang, formattedResult);
   return formattedResult;
 };
