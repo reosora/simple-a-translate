@@ -38,8 +38,7 @@ const sendRequest = (word, sourceLang, targetLang) => {
   const url = getSettings("endpoint");
   const xhr = new XMLHttpRequest();
   xhr.responseType = "json";
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.open("GET", url);
+  xhr.open("POST", url);
   xhr.send(data);
 
   return new Promise((resolve, reject) => {
@@ -95,27 +94,19 @@ const formatAwsResult = result => {
     statusText: ""
   };
 
-  // Now I don't understand how to get AWS.Response by using translateText. so I have not check HTTP Status Code yet.
-  /*
   if (result.status === 0) resultData.statusText = "Network Error";
   else if (result.status === 200) resultData.statusText = "OK";
-  else if (result.status === 429) resultData.statusText = "Service Unavailable";
-  else if (result.status === 503) resultData.statusText = "Service Unavailable";
+  else if (result.status === 400) resultData.statusText = "Internal Service Error";
+  else if (result.status === 401) resultData.statusText = "Wrong Method: You should use 'POST'.";
   else resultData.statusText = result.statusText || result.status;
-  */
 
-  if (!result) {
-    log.error(logDir, "formatAwsResult()", "NullTranslateResult");
-    return "Unexpected NullResult Error";
+  if (resultData.statusText !== "OK") {
+    log.error(logDir, "formatAwsResult()", resultData);
+    return resultData;
   }
-  if (!result.TranslatedText) {
-    log.error(logDir, "formatAwsResult()", "UnexpectedError");
-    return result;
-  }
-  resultData.statusText = "OK";
 
-  resultData.sourceLanguage = result.SourceLanguageCode;
-  resultData.resultText = result.TranslatedText;
+  resultData.sourceLanguage = result.response.SourceLanguageCode;
+  resultData.resultText = result.response.TranslatedText;
 
   log.log(logDir, "formatAwsResult()", resultData);
   return resultData;
